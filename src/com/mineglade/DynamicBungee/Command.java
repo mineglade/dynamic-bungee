@@ -27,7 +27,7 @@ public class Command extends net.md_5.bungee.api.plugin.Command {
             return;
         }
 
-        if (strings.length <= 1) {
+        if (strings.length < 1) {
             sender.sendMessage(new ComponentBuilder(
                     ChatColor.translateAlternateColorCodes('&',
                             "&cPlease provide a sub-command:&f add&c,&f remove&c,&f list"))
@@ -35,45 +35,45 @@ public class Command extends net.md_5.bungee.api.plugin.Command {
             return;
         }
 
-        if (strings[1].equals("add")) {
+        if (strings[0].equals("add")) {
             if (!sender.hasPermission("dynamicbungee.add")) return;
-            if (strings.length < 4) {
+            if (strings.length < 3) {
                 sender.sendMessage(new ComponentBuilder(ChatColor.translateAlternateColorCodes('&',
                         "&cA&f name&c and&f host&c:&fport&c must be provided."))
                         .create());
                 return;
             }
 
-            if (strings.length == 4) {
+            if (strings.length == 3) {
                 addServer(sender,
-                        strings[2],
-                        InetSocketAddress.createUnresolved(strings[3].split(":")[0], parseInt(strings[3].split(":")[1])));
+                        strings[1],
+                        InetSocketAddress.createUnresolved(strings[2].split(":")[0], parseInt(strings[2].split(":")[1])));
             }
-            else if (strings.length == 5) {
+            else if (strings.length == 4) {
                 addServer(sender,
-                        strings[2],
-                        InetSocketAddress.createUnresolved(strings[3].split(":")[0], parseInt(strings[3].split(":")[1])),
-                        Boolean.parseBoolean(strings[4]));
+                        strings[1],
+                        InetSocketAddress.createUnresolved(strings[2].split(":")[0], parseInt(strings[2].split(":")[1])),
+                        Boolean.parseBoolean(strings[3]));
             }
             else {
                 addServer(sender,
-                        strings[2],
-                        InetSocketAddress.createUnresolved(strings[3].split(":")[0], parseInt(strings[3].split(":")[1])),
-                        Boolean.parseBoolean(strings[4]),
-                        strings[5]);
+                        strings[1],
+                        InetSocketAddress.createUnresolved(strings[2].split(":")[0], parseInt(strings[2].split(":")[1])),
+                        Boolean.parseBoolean(strings[3]),
+                        strings[4]);
             }
         }
-        else if (strings[1].equals("remove")) {
+        else if (strings[0].equals("remove")) {
             if (!sender.hasPermission("dynamicbungee.remove")) return;
-            if (strings.length < 3) {
+            if (strings.length < 2) {
                 sender.sendMessage(new ComponentBuilder(ChatColor.translateAlternateColorCodes('&',
                         "&cThe &fname&c of the server you wish to remove must be provided."))
                         .create());
                 return;
             }
-            removeServer(sender, strings[2]);
+            removeServer(sender, strings[1]);
         }
-        else if (strings[1].equals("list")) {
+        else if (strings[0].equals("list")) {
             listServers(sender);
         }
         else {
