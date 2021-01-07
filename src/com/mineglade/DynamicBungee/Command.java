@@ -16,6 +16,7 @@ import java.io.PrintStream;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import static java.lang.Integer.parseInt;
 
@@ -65,7 +66,7 @@ public class Command extends net.md_5.bungee.api.plugin.Command {
                         strings[1],
                         InetSocketAddress.createUnresolved(strings[2].split(":")[0], parseInt(strings[2].split(":")[1])),
                         Boolean.parseBoolean(strings[3]),
-                        strings[4]);
+                        String.join(" ", Arrays.copyOfRange(strings, 4, strings.length)));
             }
         }
         else if (strings[0].equals("remove")) {
