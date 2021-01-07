@@ -20,7 +20,8 @@ Here's a [video demonstration](https://youtu.be/9kEYm0qiOoE)
 # Coming Soon
 - Configuration file that'll be read and added in onEnable() so you don't have to add all your servers every restart
 - fix to the serverlist so it actually displays playercount
-- colored serverlist table :3
+- more command aliases
 
 # Considering
 - configurable serverlist table so you can hide all the different columns (for privacy concerning ip-addresses / hosts)
+- colored serverlist table :3
