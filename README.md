@@ -1,5 +1,7 @@
 # DynamicBungee
- simple plugin that allows you to dynamically add servers and forced hosts to your bungeecord/waterfall server
+simple plugin that allows you to dynamically add servers and forced hosts to your bungeecord/waterfall server
+
+Here's a [video demonstration](https://youtu.be/9kEYm0qiOoE)
 
 # Commands
 | command | description | usage | aliases | permission |
