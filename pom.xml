@@ -45,7 +45,10 @@
                     <createDependencyReducedPom>false</createDependencyReducedPom>
                     <minimizeJar>true</minimizeJar>
                     <relocations>
-
+                        <relocation>
+                            <pattern>com.massisframework</pattern>
+                            <shadedPattern>com.mineglade.dynamicbungee.lib.massisframework</shadedPattern>
+                        </relocation>
                     </relocations>
                     <filters>
                         <filter>
@@ -70,6 +73,11 @@
     </repositories>
 
     <dependencies>
+        <dependency>
+            <groupId>xyz.derkades</groupId>
+            <artifactId>Derkutils</artifactId>
+            <version>master</version>
+        </dependency>
         <dependency>
             <groupId>net.md-5</groupId>
             <artifactId>bungeecord-api</artifactId>

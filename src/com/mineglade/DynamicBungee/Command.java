@@ -8,9 +8,14 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.connection.Server;
 import net.md_5.bungee.api.plugin.Plugin;
+import xyz.derkades.derkutils.bungee.CommandSenderOutputStream;
 
+import java.io.PrintStream;
 import java.net.InetSocketAddress;
+import java.net.Proxy;
+import java.util.ArrayList;
 
 import static java.lang.Integer.parseInt;
 
@@ -22,16 +27,16 @@ public class Command extends net.md_5.bungee.api.plugin.Command {
 
     public void execute(CommandSender sender, String[] strings) {
 
-        if (!sender.hasPermission("dynamicbungee")) {
-            sender.sendMessage(new ComponentBuilder("Sorry, you do not have permission to use " + strings[0]).color(ChatColor.RED).create());
-            return;
-        }
-
-        if (strings.length < 1) {
+        if (strings.length == 0) {
             sender.sendMessage(new ComponentBuilder(
                     ChatColor.translateAlternateColorCodes('&',
                             "&cPlease provide a sub-command:&f add&c,&f remove&c,&f list"))
                     .create());
+            return;
+        }
+
+        if (!sender.hasPermission("dynamicbungee")) {
+            sender.sendMessage(new ComponentBuilder("Sorry, you do not have permission to use " + strings[0]).color(ChatColor.RED).create());
             return;
         }
 
@@ -85,17 +90,14 @@ public class Command extends net.md_5.bungee.api.plugin.Command {
     }
 
     private void addServer(CommandSender sender, String name, InetSocketAddress address) {
-        ProxyServer.getInstance().getServers().put(name, ProxyServer.getInstance().constructServerInfo(name, address, "", false));
-        sender.sendMessage(new ComponentBuilder(ChatColor.translateAlternateColorCodes('&',
-                "&aThe server &f" + name + "&a, with host &f" + address.getHostString() +"&a:&f" + address.getPort() + "&a has been added to the proxy."))
-                .create());
+        String motd = "";
+        boolean restricted = false;
+        addServer(sender, name, address, restricted, motd);
     }
 
     private void addServer(CommandSender sender, String name, InetSocketAddress address, boolean restricted) {
-        ProxyServer.getInstance().getServers().put(name, ProxyServer.getInstance().constructServerInfo(name, address, "", restricted));
-        sender.sendMessage(new ComponentBuilder(ChatColor.translateAlternateColorCodes('&',
-                "&aThe server &f" + name + "&a, with host &f" + address.getHostString() +"&a:&f" + address.getPort() + "&a has been added to the proxy with restricted set to &f" + restricted + "&a."))
-                .create());
+        String motd = "";
+        addServer(sender, name, address, restricted, motd);
     }
 
     public static void addServer(CommandSender sender, String name, InetSocketAddress address, boolean restricted, String motd) {
@@ -118,14 +120,18 @@ public class Command extends net.md_5.bungee.api.plugin.Command {
         final String[] columns = {"players", "name", "address", "motd"};
         final Object[][] data = new Object[ProxyServer.getInstance().getServers().size()][columns.length];
 
+        ArrayList<ServerInfo> serverInfos = new ArrayList<>(ProxyServer.getInstance().getServers().values());
+
         for (int i = 0; i < ProxyServer.getInstance().getServers().size(); i++) {
-            ServerInfo serverInfo = ProxyServer.getInstance().getServers().get(i);
-            data[i][1] = serverInfo.getPlayers().size();
+            ServerInfo serverInfo = serverInfos.get(i);
+            data[i][1] = String.valueOf(serverInfo.getPlayers().size());
             data[i][1] = serverInfo.getName();
             data[i][2] = serverInfo.getSocketAddress();
             data[i][3] = serverInfo.getMotd();
         }
 
-        sender.sendMessage(new ComponentBuilder(ChatColor.translateAlternateColorCodes('&', new TextTable(columns, data).toString())).create());
+        try (PrintStream stream = new PrintStream(new CommandSenderOutputStream(sender))) {
+            new TextTable(columns, data).printTable(stream, 0); //TODO
+        }
     }
 }
