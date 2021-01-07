@@ -80,6 +80,7 @@ public class Command extends net.md_5.bungee.api.plugin.Command {
             removeServer(sender, strings[1]);
         }
         else if (strings[0].equals("list")) {
+            if (!sender.hasPermission("dynamicbungee.list")) return;
             listServers(sender);
         }
         else {
