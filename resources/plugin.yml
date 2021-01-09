@@ -1,4 +1,5 @@
 name: DynamicBungee
-main: com.mineglade.DynamicBungee.Main
+main: com.mineglade.DynamicBungee.DynamicBungee
+version: alpha
 
 author: miacx
