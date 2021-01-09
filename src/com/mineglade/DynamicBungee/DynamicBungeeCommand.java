@@ -20,10 +20,13 @@ import java.util.Arrays;
 
 import static java.lang.Integer.parseInt;
 
-public class Command extends net.md_5.bungee.api.plugin.Command {
+public class DynamicBungeeCommand extends net.md_5.bungee.api.plugin.Command {
 
-    public Command(Plugin plugin) {
+    DynamicBungee plugin;
+
+    public DynamicBungeeCommand(Plugin plugin) {
         super("DynamicBungee", "", "db", "dynbun");
+        this.plugin = (DynamicBungee) plugin;
     }
 
     public void execute(CommandSender sender, String[] strings) {
@@ -117,12 +120,12 @@ public class Command extends net.md_5.bungee.api.plugin.Command {
         sender.sendMessage(new ComponentBuilder("The server " + name + " has been removed from the proxy.").color(ChatColor.GREEN).create());
     }
 
-    public static void listServers(CommandSender sender) {
+    public void listServers(CommandSender sender) {
         StringBuilder serverList = new StringBuilder();
         final String[] columns = {"players", "name", "address", "motd"};
         final Object[][] data = new Object[ProxyServer.getInstance().getServers().size()][columns.length];
 
-        ArrayList<ServerInfo> serverInfos = new ArrayList<>(ProxyServer.getInstance().getServers().values());
+        ArrayList<ServerInfo> serverInfos = DynamicBungee.listServers(this.plugin);
 
         for (int i = 0; i < ProxyServer.getInstance().getServers().size(); i++) {
             ServerInfo serverInfo = serverInfos.get(i);
@@ -133,7 +136,7 @@ public class Command extends net.md_5.bungee.api.plugin.Command {
         }
 
         try (PrintStream stream = new PrintStream(new CommandSenderOutputStream(sender))) {
-            new TextTable(columns, data).printTable(stream, 0); //TODO
+            new TextTable(columns, data).printTable(stream, 0);
         }
     }
 }
