@@ -27,17 +27,18 @@ public class DynamicBungee extends Plugin {
 
 
         int pluginId = 9945; // <-- Replace with the id of your plugin!
-//        metrics = new Metrics(this, pluginId);
+        metrics = new Metrics(this, pluginId);
 
         try {
             configuration = new ConfigurationHandler(this);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        getConfig().mapServers(getConfig().getServers());
 
 //        listServers(this);
 
-//        ProxyServer.getInstance().getPluginManager().registerCommand(this, new DynamicBungeeCommand(this));
+        ProxyServer.getInstance().getPluginManager().registerCommand(this, new DynamicBungeeCommand(this));
     }
 
     @Override
@@ -71,6 +72,6 @@ public class DynamicBungee extends Plugin {
     }
 
     public ConfigurationHandler getConfig() {
-        return configuration;
+        return this.configuration;
     }
 }

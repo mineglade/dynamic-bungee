@@ -1,6 +1,5 @@
 package com.mineglade.DynamicBungee.api;
 
-import com.google.common.io.ByteStreams;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.config.Configuration;
@@ -26,7 +25,6 @@ public class ConfigurationHandler {
         this.plugin = plugin;
 
         loadConfig();
-        mapServers(getServers());
     }
 
     public Configuration getConfig() {
@@ -72,9 +70,9 @@ public class ConfigurationHandler {
     // TODO
     public ConfigurationHandler addServer(Server server) {
         Configuration serverSection = getConfig().getSection("servers");
-        serverSection.set(server+".host", server.getHost());
-        serverSection.set(server+".motd", server.getMotd());
-        serverSection.set(server+".restricted", server.getRestricted());
+        serverSection.set(server.getName()+".host", server.getHost().toString());
+        serverSection.set(server.getName()+".motd", server.getMotd());
+        serverSection.set(server.getName()+".restricted", server.getRestricted());
         return this;
     }
 
@@ -91,9 +89,6 @@ public class ConfigurationHandler {
         Map<String, Server> servers = new HashMap<>();
         names.forEach(name -> {
             Configuration serverSection = getConfig().getSection("servers." + name);
-            System.out.println(name);
-            System.out.println(serverSection.getString("host"));
-            System.out.println(serverSection.getString("motd"));
             try {
                 new ServerBuilder(name)
                         .withHost(serverSection.getString("host"))

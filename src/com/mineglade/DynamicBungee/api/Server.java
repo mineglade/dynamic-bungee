@@ -134,7 +134,7 @@ public class Server {
      *
      * @return the {@link SocketAddress} host of this {@link Server}
      */
-    public SocketAddress getHost() {
+    public InetSocketAddress getHost() {
         return this.host;
     }
 
@@ -239,7 +239,6 @@ public class Server {
     public Server addServer() {
         ProxyServer.getInstance().getServers().put(getName(), getServerInfo());
         servers.put(getName(), this);
-
 
         DynamicBungee.getInstance().getConfig().addServer(this).saveConfig();
         return this;
