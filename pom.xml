@@ -6,7 +6,7 @@
 
     <groupId>com.mineglade</groupId>
     <artifactId>DynamicBungee</artifactId>
-    <version>alpha</version>
+    <version>beta</version>
 
     <name>DynamicBungee</name>
     <url>https://github.com/MineGlade/DynamicBungee</url>
