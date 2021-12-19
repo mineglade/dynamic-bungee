@@ -17,12 +17,14 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 
+import static java.lang.Integer.parseInt;
+
 /**
  * <p></p>a "wrapper" class for {@link ServerInfo}</p><br>
  * Unfortunately, the BungeeCord API does not allow for renaming, changing the MOTD, etc.
  * while the server is in a listener. This class aims to simplify dynamic server changes
- * & additions through "reconnecting". I do not recommend using this in a production setting,
- * but it's VERY useful for testing & debugging.
+ * & additions through "reconnecting". I do not recommend using this "live renaming" in a
+ * production setting, but it's VERY useful for testing & debugging.
  */
 public class Server {
 
@@ -52,18 +54,6 @@ public class Server {
      */
     public String getName() {
         return this.name;
-    }
-
-    /**
-     * <p>static wrapper for {@link Server#getName()}</p> <br>
-     * use {@link Server#getServer(String)}#{@link Server#getName()}
-     *
-     * @param server {@link Server} to get name of
-     * @return name of provided {@link Server}
-     */
-    @Deprecated
-    public static String getName(Server server) {
-        return server.getName();
     }
 
     /**
@@ -138,58 +128,99 @@ public class Server {
         return this.host;
     }
 
-    /**
-     * <p>static wrapper for {@link Server#getHost()}</p><br>
-     * use {@link Server#getServer(String)}#{@link Server#getHost()}
-     *
-     * @param server the server to get the host of
-     * @return the {@link SocketAddress} host of provided {@link Server}
-     */
-    @Deprecated
-    private static SocketAddress getHost(Server server) {
-        return server.getHost();
-    }
-
-    /**
-     * <p>static wrapper for {@link Server#getHost()}</p><br>
-     * use {@link Server#getServer(String)}#{@link Server#getHost()}
-     *
-     * @param name the name of the server to get the host of
-     * @return the {@link SocketAddress} host of provided {@link Server}
-     */
-    @Deprecated
-    private static SocketAddress getHost(String name) {
-        return getServer(name).getHost();
-    }
-
+    // TODO
     private Server setHost(InetSocketAddress host) {
-
-        return this;
-    }
-//
-//    public Collection<ProxiedPlayer> redirectServer(String host, boolean redirect) {
-//    }
-
-    private Server setRestricted(boolean restricted) {
-        this.restricted = restricted;
+        this.host = host;
         return this;
     }
 
-    /**
-     * @return
-     */
-    public ServerInfo getServerInfo() {
-        return this.serverInfo;
+    private Server setHost(String host) {
+        return setHost(InetSocketAddress.createUnresolved(host.split(":")[0], parseInt(host.split(":")[1])));
     }
 
     /**
-     * Sets the ServerInfo from instance variables.
+     * <p>
+     * NOTE: redirecting servers is not currently supported by the BungeeCord API.
+     * this method is just a hacky quality-of-life method that should NOT be used in production.
+     * </p> <br> <p>
+     * removes entry with the old host, then creates a new entry with the new host.
+     * this WILL send all players that are connected to the server you're trying to rename, to the "fallback server".
+     * </p>
      *
-     * @return the current instance of {@link Server}, for chaining
+     * @param host the new host to set the server to
+     * @return {@link Collection} of {@link ProxiedPlayer}s that were dis- and/or reconnected
      */
-    private Server createServerInfo() {
-        this.serverInfo = ProxyServer.getInstance().constructServerInfo(getName(), getHost(), getMotd(), getRestricted());
-        return this;
+    @Deprecated
+    public Collection<ProxiedPlayer> redirectServer(InetSocketAddress host) {
+        return redirectServer(host, false);
+    }
+
+    /**
+     * <p>
+     * NOTE: redirecting servers is not currently supported by the BungeeCord API.
+     * this method is just a hacky quality-of-life method that should NOT be used in production.
+     * </p> <br> <p>
+     * removes entry with the old host, then creates a new entry with the new host.
+     * this WILL send all players that are connected to the server you're trying to rename, to the "fallback server".
+     * </p>
+     *
+     * @param host the new host to set the server to
+     * @return {@link Collection} of {@link ProxiedPlayer}s that were dis- and/or reconnected
+     */
+    @Deprecated
+    public Collection<ProxiedPlayer> redirectServer(String host) {
+        return redirectServer(host, false);
+    }
+
+    /**
+     * <p>
+     * NOTE: redirecting servers is not currently supported by the BungeeCord API.
+     * this method is just a hacky quality-of-life method that should NOT be used in production.
+     * </p> <br> <p>
+     * removes entry with the old host, then creates a new entry with the new host.
+     * this WILL send all players that are connected to the server you're trying to rename, to the "fallback server".
+     * it will reconnect them to the "new" server after renaming if <code>reconnect</code> is set to true
+     * </p>
+     *
+     * @param host     the new host to set the server to
+     * @param redirect whether to redirect the players to the "new" server
+     * @return {@link Collection} of {@link ProxiedPlayer}s that were dis- and/or reconnected
+     */
+    @Deprecated
+    public Collection<ProxiedPlayer> redirectServer(String host, boolean redirect) {
+        return redirectServer(InetSocketAddress.createUnresolved(host.split(":")[0], parseInt(host.split(":")[1])), redirect);
+    }
+
+    /**
+     * <p>
+     * NOTE: redirecting servers is not currently supported by the BungeeCord API.
+     * this method is just a hacky quality-of-life method that should NOT be used in production.
+     * </p> <br> <p>
+     * removes entry with the old host, then creates a new entry with the new host.
+     * this WILL send all players that are connected to the server you're trying to rename, to the "fallback server".
+     * it will reconnect them to the "new" server after renaming if <code>reconnect</code> is set to true
+     * </p>
+     *
+     * @param host     the new host to set the server to
+     * @param redirect whether to redirect the players to the "new" server
+     * @return {@link Collection} of {@link ProxiedPlayer}s that were dis- and/or reconnected
+     */
+    @Deprecated
+    public Collection<ProxiedPlayer> redirectServer(InetSocketAddress host, boolean redirect) {
+        Collection<ProxiedPlayer> activePlayers = getPlayers();
+        activePlayers.forEach(proxiedPlayer -> proxiedPlayer.connect(getFallbackServer(), ServerConnectEvent.Reason.valueOf("The server you were playing on, is being renamed.")));
+
+        removeServer();
+
+        setHost(host);
+        Server server = createServerInfo();
+        addServer(server);
+
+        if (redirect) {
+            activePlayers.forEach(proxiedPlayer -> proxiedPlayer.connect(getServerInfo(), ServerConnectEvent.Reason.valueOf("You were reconnected to the server you were previously playing on.")));
+        }
+
+        return activePlayers;
     }
 
     public String getMotd() {
@@ -198,6 +229,22 @@ public class Server {
 
     public boolean getRestricted() {
         return this.restricted;
+    }
+    /**
+     * @return
+     */
+    public ServerInfo getServerInfo() {
+        return this.serverInfo;
+    }
+
+    /**
+     * Creates & sets {@link ServerInfo} from instance variables.
+     *
+     * @return the current instance of {@link Server}, for chaining
+     */
+    private Server createServerInfo() {
+        this.serverInfo = ProxyServer.getInstance().constructServerInfo(getName(), getHost(), getMotd(), getRestricted());
+        return this;
     }
 
     /**
