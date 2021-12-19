@@ -30,8 +30,7 @@ public class ServerBuilder {
     }
 
     public ServerBuilder withHost(String host) {
-        return withHost(InetSocketAddress.createUnresolved(
-                host.split(":")[0], parseInt(host.split(":")[1])));
+        return withHost(InetSocketAddress.createUnresolved(host.split(":")[0], parseInt(host.split(":")[1])));
     }
     public ServerBuilder withHost(InetSocketAddress host) {
         this.host = host;
