@@ -1,5 +1,7 @@
 package com.mineglade.DynamicBungee;
 
+import com.mineglade.DynamicBungee.DynamicBungee;
+import com.mineglade.DynamicBungee.api.ServerBuilder;
 import dnl.utils.text.table.TextTable;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
@@ -55,18 +57,18 @@ public class DynamicBungeeCommand extends net.md_5.bungee.api.plugin.Command {
             if (strings.length == 3) {
                 addServer(sender,
                         strings[1],
-                        InetSocketAddress.createUnresolved(strings[2].split(":")[0], parseInt(strings[2].split(":")[1])));
+                        strings[2]);
             }
             else if (strings.length == 4) {
                 addServer(sender,
                         strings[1],
-                        InetSocketAddress.createUnresolved(strings[2].split(":")[0], parseInt(strings[2].split(":")[1])),
+                        strings[2],
                         Boolean.parseBoolean(strings[3]));
             }
             else {
                 addServer(sender,
                         strings[1],
-                        InetSocketAddress.createUnresolved(strings[2].split(":")[0], parseInt(strings[2].split(":")[1])),
+                        strings[2],
                         Boolean.parseBoolean(strings[3]),
                         String.join(" ", Arrays.copyOfRange(strings, 4, strings.length)));
             }
@@ -93,22 +95,24 @@ public class DynamicBungeeCommand extends net.md_5.bungee.api.plugin.Command {
         }
     }
 
-    private void addServer(CommandSender sender, String name, InetSocketAddress address) {
-        String motd = "";
-        boolean restricted = false;
-        addServer(sender, name, address, restricted, motd);
+    private void addServer(CommandSender sender, String name, String host) {
+        addServer(sender, name, host, false);
     }
 
-    private void addServer(CommandSender sender, String name, InetSocketAddress address, boolean restricted) {
-        String motd = "";
-        addServer(sender, name, address, restricted, motd);
+    private void addServer(CommandSender sender, String name, String host, boolean restricted) {
+        addServer(sender, name, host, restricted, "");
     }
 
-    public static void addServer(CommandSender sender, String name, InetSocketAddress address, boolean restricted, String motd) {
-        ProxyServer.getInstance().getServers().put(name, ProxyServer.getInstance().constructServerInfo(name, address, motd, restricted));
-        sender.sendMessage(new ComponentBuilder(ChatColor.translateAlternateColorCodes('&',
-                "&aThe server &f" + name + "&a, with host &f" + address.getHostString() +"&a:&f" + address.getPort() + "&a has been added to the proxy with restricted set to &f" + restricted + "&a and an motd of &f "+ motd +"&a."))
-                .create());
+    public static void addServer(CommandSender sender, String name, String host, boolean restricted, String motd) {
+        try {
+            new ServerBuilder(name)
+                    .withHost(host)
+                    .withMotd(motd)
+                    .withRestricted(restricted)
+                    .create();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void removeServer(CommandSender sender, String name) {
