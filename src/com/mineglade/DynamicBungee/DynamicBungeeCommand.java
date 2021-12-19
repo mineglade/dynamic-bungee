@@ -18,6 +18,7 @@ import java.util.Arrays;
 
 import static java.lang.Integer.parseInt;
 
+@Deprecated
 public class DynamicBungeeCommand extends net.md_5.bungee.api.plugin.Command {
 
     DynamicBungee plugin;
@@ -82,7 +83,7 @@ public class DynamicBungeeCommand extends net.md_5.bungee.api.plugin.Command {
         }
         else if (strings[0].equals("list")) {
             if (!sender.hasPermission("dynamicbungee.list")) return;
-            listServers(sender);
+//            listServers(sender);
         }
         else {
             sender.sendMessage(new ComponentBuilder(
@@ -118,23 +119,23 @@ public class DynamicBungeeCommand extends net.md_5.bungee.api.plugin.Command {
         sender.sendMessage(new ComponentBuilder("The server " + name + " has been removed from the proxy.").color(ChatColor.GREEN).create());
     }
 
-    public void listServers(CommandSender sender) {
-        StringBuilder serverList = new StringBuilder();
-        final String[] columns = {"players", "name", "address", "motd"};
-        final Object[][] data = new Object[ProxyServer.getInstance().getServers().size()][columns.length];
-
-        ArrayList<ServerInfo> serverInfos = DynamicBungee.listServers(this.plugin);
-
-        for (int i = 0; i < ProxyServer.getInstance().getServers().size(); i++) {
-            ServerInfo serverInfo = serverInfos.get(i);
-            data[i][1] = String.valueOf(serverInfo.getPlayers().size());
-            data[i][1] = serverInfo.getName();
-            data[i][2] = serverInfo.getSocketAddress();
-            data[i][3] = serverInfo.getMotd();
-        }
-
-        try (PrintStream stream = new PrintStream(new CommandSenderOutputStream(sender))) {
-            new TextTable(columns, data).printTable(stream, 0);
-        }
-    }
+//    public void listServers(CommandSender sender) {
+//        StringBuilder serverList = new StringBuilder();
+//        final String[] columns = {"players", "name", "address", "motd"};
+//        final Object[][] data = new Object[ProxyServer.getInstance().getServers().size()][columns.length];
+//
+//        ArrayList<ServerInfo> serverInfos = DynamicBungee.listServers(this.plugin);
+//
+//        for (int i = 0; i < ProxyServer.getInstance().getServers().size(); i++) {
+//            ServerInfo serverInfo = serverInfos.get(i);
+//            data[i][1] = String.valueOf(serverInfo.getPlayers().size());
+//            data[i][1] = serverInfo.getName();
+//            data[i][2] = serverInfo.getSocketAddress();
+//            data[i][3] = serverInfo.getMotd();
+//        }
+//
+//        try (PrintStream stream = new PrintStream(new CommandSenderOutputStream(sender))) {
+//            new TextTable(columns, data).printTable(stream, 0);
+//        }
+//    }
 }
