@@ -2,12 +2,10 @@ package com.mineglade.DynamicBungee;
 
 import com.mineglade.DynamicBungee.api.ConfigurationHandler;
 import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.plugin.Plugin;
 import org.bstats.bungeecord.Metrics;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.concurrent.Callable;
 
 public class DynamicBungee extends Plugin {
