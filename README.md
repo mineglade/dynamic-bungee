@@ -16,9 +16,9 @@ Here's a [video demonstration](https://youtu.be/9kEYm0qiOoE)
 - Removing servers
 - A more detailed server list than glist
 - Permission checks for each of the commands
+- (available in beta 0.3-preview) Configuration file that'll be read and added in onEnable() so you don't have to add all your servers every restart
 
 # Coming Soon
-- Configuration file that'll be read and added in onEnable() so you don't have to add all your servers every restart
 - fix to the serverlist so it actually displays playercount
 - more command aliases
 - forced hosts
