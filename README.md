@@ -26,3 +26,4 @@ Here's a [video demonstration](https://youtu.be/9kEYm0qiOoE)
 # Considering
 - configurable serverlist table so you can hide all the different columns (for privacy concerning ip-addresses / hosts)
 - colored serverlist table :3
+- saw https://github.com/mcgrizzz/DynamicProxy and I thought I might be able to merge the two plugins.
