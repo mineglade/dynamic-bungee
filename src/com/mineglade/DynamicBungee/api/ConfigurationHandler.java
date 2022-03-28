@@ -76,9 +76,9 @@ public class ConfigurationHandler {
         return this;
     }
 
-    public ConfigurationHandler removeServer(Server server) {
+    public ConfigurationHandler  removeServer(Server server) {
         getConfig().set("servers." + server.getName(), null);
-        return null;
+        return this;
     }
 
     public Collection<String> getServers() {

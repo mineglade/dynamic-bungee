@@ -1,6 +1,7 @@
 package com.mineglade.DynamicBungee;
 
 import com.mineglade.DynamicBungee.DynamicBungee;
+import com.mineglade.DynamicBungee.api.Server;
 import com.mineglade.DynamicBungee.api.ServerBuilder;
 import dnl.utils.text.table.TextTable;
 import net.md_5.bungee.api.ChatColor;
@@ -120,6 +121,8 @@ public class DynamicBungeeCommand extends net.md_5.bungee.api.plugin.Command {
             p.disconnect(new TextComponent("This server was closed by an admin."));
         }
         ProxyServer.getInstance().getServers().remove(name);
+        Server server = Server.getServer(name);
+        server.removeServer();
         sender.sendMessage(new ComponentBuilder("The server " + name + " has been removed from the proxy.").color(ChatColor.GREEN).create());
     }
 
