@@ -18,13 +18,9 @@ public class DynamicBungee extends Plugin {
         instance = this;
     }
 
-    Metrics metrics;
 
     @Override
     public void onEnable() {
-
-
-
         try {
             configuration = new ConfigurationHandler(this);
         } catch (IOException e) {

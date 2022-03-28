@@ -18,6 +18,8 @@ import java.io.PrintStream;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import static java.lang.Integer.parseInt;
 
@@ -86,7 +88,7 @@ public class DynamicBungeeCommand extends net.md_5.bungee.api.plugin.Command {
         }
         else if (strings[0].equals("list")) {
             if (!sender.hasPermission("dynamicbungee.list")) return;
-//            listServers(sender);
+            listServers(sender);
         }
         else {
             sender.sendMessage(new ComponentBuilder(
@@ -124,6 +126,13 @@ public class DynamicBungeeCommand extends net.md_5.bungee.api.plugin.Command {
         Server server = Server.getServer(name);
         server.removeServer();
         sender.sendMessage(new ComponentBuilder("The server " + name + " has been removed from the proxy.").color(ChatColor.GREEN).create());
+    }
+    public void listServers(CommandSender sender) {
+        Map<String, Server> servers = new HashMap<>();
+        servers = Server.getServers();
+        for (Map.Entry<String, Server> entry : servers.entrySet()) {
+            sender.sendMessage("Name:" + entry.getValue().getName() + ";Host:"+entry.getValue().getHost().getHostName() + ":" + entry.getValue().getHost().getPort());
+        }
     }
 
 //    public void listServers(CommandSender sender) {
