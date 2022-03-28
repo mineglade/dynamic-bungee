@@ -24,8 +24,6 @@ public class DynamicBungee extends Plugin {
     public void onEnable() {
 
 
-        int pluginId = 9945; // <-- Replace with the id of your plugin!
-        metrics = new Metrics(this, pluginId);
 
         try {
             configuration = new ConfigurationHandler(this);
@@ -33,9 +31,6 @@ public class DynamicBungee extends Plugin {
             e.printStackTrace();
         }
         getConfig().mapServers(getConfig().getServers());
-
-//        listServers(this);
-
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new DynamicBungeeCommand(this));
     }
 
@@ -43,12 +38,6 @@ public class DynamicBungee extends Plugin {
     public void onDisable() {
         ProxyServer.getInstance().getPluginManager().unregisterCommands(this);
 
-        metrics.addCustomChart(new Metrics.SingleLineChart("connected_servers", new Callable<Integer>() {
-            @Override
-            public Integer call() throws Exception {
-                return 0;
-            }
-        }));
     }
 
 //    public static ArrayList<ServerInfo> listServers(DynamicBungee plugin) {
