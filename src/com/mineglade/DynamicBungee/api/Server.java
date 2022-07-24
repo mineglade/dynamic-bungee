@@ -297,20 +297,21 @@ public class Server {
      *
      * @param server {@link Server} to remove
      */
-    public void removeServer(Server server) {
+    public Server removeServer(Server server) {
         server.removeServer();
+        return this;
     }
 
     /**
      * removes server from internal map & bungeecord
      */
-    public void removeServer() {
+    public Server removeServer() {
         ProxyServer.getInstance().getServers().remove(getName());
         servers.remove(getName());
 
 
         DynamicBungee.getInstance().getConfig().removeServer(this).saveConfig();
-
+        return this;
     }
 
     /**
