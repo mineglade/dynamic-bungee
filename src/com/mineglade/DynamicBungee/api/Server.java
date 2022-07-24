@@ -135,7 +135,7 @@ public class Server {
     }
 
     private Server setHost(String host) {
-        return setHost(InetSocketAddress.createUnresolved(host.split(":")[0], parseInt(host.split(":")[1])));
+        return setHost(InetSocketAddress.createUnresolved(host.split(":")[0].split("/")[0], parseInt(host.split(":")[1])));
     }
 
     /**
@@ -188,7 +188,7 @@ public class Server {
      */
     @Deprecated
     public Collection<ProxiedPlayer> redirectServer(String host, boolean redirect) {
-        return redirectServer(InetSocketAddress.createUnresolved(host.split(":")[0], parseInt(host.split(":")[1])), redirect);
+        return redirectServer(InetSocketAddress.createUnresolved(host.split(":")[0].split("/")[0], parseInt(host.split(":")[1])), redirect);
     }
 
     /**
@@ -298,7 +298,8 @@ public class Server {
      * @param server {@link Server} to remove
      */
     public Server removeServer(Server server) {
-        return server.removeServer();
+        server.removeServer();
+        return this;
     }
 
     /**
